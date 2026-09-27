@@ -1,0 +1,19 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Golden Traders favicon">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8e6a3"/>
+      <stop offset="35%" stop-color="#d4af37"/>
+      <stop offset="70%" stop-color="#b8860b"/>
+      <stop offset="100%" stop-color="#f0c75e"/>
+    </linearGradient>
+    <linearGradient id="dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a210f"/>
+      <stop offset="100%" stop-color="#140f09"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="url(#gold)"/>
+  <circle cx="32" cy="32" r="23" fill="url(#dark)" stroke="#f9df8b" stroke-width="2"/>
+  <path d="M41 22.5a12 12 0 0 0-19.6 8.5A12 12 0 0 0 41 41.5h-7.8v-4.6H41a7.4 7.4 0 1 1 0-14.8h-2.1V19l-8.2 6.9v4.8l8.2-6.9v4.2h4.1a10.7 10.7 0 0 0-.1-6.5z" fill="#f9e7a3"/>
+  <path d="M24.5 22.5h8.2v4.4h-8.2z" fill="#fbeea4"/>
+  <path d="M25 38.5h11.4v4.4H25z" fill="#fbeea4"/>
+</svg>

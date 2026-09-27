@@ -1,0 +1,16 @@
+{
+  "name": "cms-classifieds-backend",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "server": "node server.js",
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

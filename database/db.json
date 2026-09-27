@@ -1,0 +1,135 @@
+{
+  "categories": [
+    {
+      "id": "vehicles",
+      "name": "Vehicles",
+      "icon": "Car",
+      "count": 1284
+    },
+    {
+      "id": "property",
+      "name": "Property",
+      "icon": "Home",
+      "count": 862
+    },
+    {
+      "id": "electronics",
+      "name": "Electronics",
+      "icon": "Smartphone",
+      "count": 2043
+    },
+    {
+      "id": "furniture",
+      "name": "Furniture",
+      "icon": "Sofa",
+      "count": 731
+    },
+    {
+      "id": "jobs",
+      "name": "Jobs",
+      "icon": "Briefcase",
+      "count": 405
+    },
+    {
+      "id": "fashion",
+      "name": "Fashion",
+      "icon": "Shirt",
+      "count": 998
+    },
+    {
+      "id": "pets",
+      "name": "Pets",
+      "icon": "PawPrint",
+      "count": 214
+    },
+    {
+      "id": "services",
+      "name": "Services",
+      "icon": "Wrench",
+      "count": 356
+    },
+    {
+      "id": "travel",
+      "name": "Travel",
+      "icon": "Plane",
+      "count": 482
+    }
+  ],
+  "pages": [
+    {
+      "id": "p1",
+      "title": "How to Spot Scam Listings",
+      "slug": "how-to-spot-scam-listings",
+      "status": "Published",
+      "author": "Editorial Team",
+      "updatedAt": "2026-09-12",
+      "excerpt": "Learn the red flags that indicate a classified listing might not be legitimate."
+    },
+    {
+      "id": "p2",
+      "title": "Seller Success: Photography Tips",
+      "slug": "seller-photography-tips",
+      "status": "Published",
+      "author": "Maria Gomez",
+      "updatedAt": "2026-09-10",
+      "excerpt": "Great photos sell faster. Here is how to shoot listing photos like a pro."
+    },
+    {
+      "id": "p3",
+      "title": "Platform Terms of Service",
+      "slug": "terms-of-service",
+      "status": "Published",
+      "author": "Legal",
+      "updatedAt": "2026-08-28",
+      "excerpt": "The rules and terms governing use of the Markazi marketplace."
+    },
+    {
+      "id": "p4",
+      "title": "Autumn Marketplace Trends 2026",
+      "slug": "autumn-marketplace-trends-2026",
+      "status": "Draft",
+      "author": "Editorial Team",
+      "updatedAt": "2026-09-16",
+      "excerpt": "A first look at what categories are trending this fall season."
+    }
+  ],
+  "users": [
+    {
+      "id": "u1",
+      "name": "Ravikanth Rao",
+      "email": "ravikanth@markazi.io",
+      "role": "ADMIN",
+      "joined": "2024-01-14",
+      "status": "ACTIVE",
+      "avatar": "https://i.pravatar.cc/100?img=68"
+    },
+    {
+      "id": "u2",
+      "name": "Maria Gomez",
+      "email": "maria@markazi.io",
+      "role": "USER",
+      "joined": "2024-03-02",
+      "status": "ACTIVE",
+      "avatar": "https://i.pravatar.cc/100?img=47"
+    },
+    {
+      "id": "u3",
+      "name": "Daniel R.",
+      "email": "daniel.r@example.com",
+      "role": "USER",
+      "joined": "2025-02-19",
+      "status": "ACTIVE",
+      "avatar": "https://i.pravatar.cc/100?img=12"
+    },
+    {
+      "id": "u5",
+      "name": "Marco T.",
+      "email": "marco.t@example.com",
+      "role": "USER",
+      "joined": "2025-06-11",
+      "status": "DISABLED",
+      "avatar": "https://i.pravatar.cc/100?img=22"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
