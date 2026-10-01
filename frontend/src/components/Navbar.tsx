@@ -5,9 +5,6 @@ import { useAppContext } from '../context/AppContext'
 
 const publicNavLinks = [
   { to: '/', label: 'Home' },
-  { to: '/listings', label: 'Browse' },
-  { to: '/listings?category=travel', label: 'Travel' },
-  { to: '/pages/how-to-spot-scam-listings', label: 'Guides' },
 ]
 
 export default function Navbar() {
@@ -41,42 +38,44 @@ export default function Navbar() {
   const navigationLinks = isAuthenticated ? roleNavLinks[role] || [] : publicNavLinks
 
   return (
-    <header className="sticky top-0 z-50 border-b border-sky-100/80 bg-white/85 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-sky-100/80 bg-[#C4E3FF] backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2 font-display text-xl font-extrabold tracking-tight">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 via-blue-600 to-blue-800 text-white shadow-lg shadow-sky-200/70">
             G
           </span>
-          <span className="text-gradient">Golden Traders</span>
+          <span className="text-[#0B2A5B]">Golden Traders</span>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
-          {(isAuthenticated ? navigationLinks : publicNavLinks).map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              end={link.to === '/'}
-              className={({ isActive }) =>
-                `rounded-full px-4 py-2 text-sm font-medium transition ${
-                  isActive
-                    ? 'bg-sky-100 text-sky-900 shadow-sm'
-                    : 'text-slate-600 hover:bg-sky-50 hover:text-sky-800'
-                }`
-              }
-            >
-              {link.label}
-            </NavLink>
-          ))}
-        </nav>
+        <div className="hidden flex-1 items-center justify-center gap-6 md:flex">
+          <nav className="flex items-center gap-1">
+            {(isAuthenticated ? navigationLinks : publicNavLinks).map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                end={link.to === '/'}
+                className={({ isActive }) =>
+                  `rounded-full px-4 py-2 text-sm font-medium transition ${
+                    isActive
+                      ? 'bg-sky-100 text-sky-900 shadow-sm'
+                      : 'text-slate-600 hover:bg-sky-50 hover:text-sky-800'
+                  }`
+                }
+              >
+                {link.label}
+              </NavLink>
+            ))}
+          </nav>
 
-        <div className="hidden flex-1 max-w-sm md:block">
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sky-600" />
-            <input
-              type="search"
-              placeholder="Search listings..."
-              className="w-full rounded-full border border-sky-200 bg-sky-50/60 py-2 pl-9 pr-4 text-sm shadow-sm outline-none transition placeholder:text-sky-800/70 focus:border-sky-400 focus:ring-2 focus:ring-sky-200"
-            />
+          <div className="w-full max-w-sm">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sky-600" />
+              <input
+                type="search"
+                placeholder="Search listings..."
+                className="w-full rounded-full border border-sky-200 bg-sky-50/60 py-2 pl-9 pr-4 text-sm shadow-sm outline-none transition placeholder:text-sky-800/70 focus:border-sky-400 focus:ring-2 focus:ring-sky-200"
+              />
+            </div>
           </div>
         </div>
 
@@ -137,7 +136,7 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t border-sky-100 bg-gradient-to-b from-sky-50/80 to-white px-4 py-4 md:hidden">
+        <div className="border-t border-sky-100 bg-[#C4E3FF] px-4 py-4 md:hidden">
           <div className="flex flex-col gap-2">
             {(isAuthenticated ? navigationLinks : publicNavLinks).map((link) => (
               <NavLink

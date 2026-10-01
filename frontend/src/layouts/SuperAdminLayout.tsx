@@ -1,10 +1,11 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
-import { FileText, LayoutDashboard, List, LogOut, Settings, ShieldCheck, Users } from 'lucide-react'
+import { FileText, LayoutDashboard, List, LogOut, Megaphone, Settings, ShieldCheck, Users } from 'lucide-react'
 
 const navItems = [
   { to: '/super-admin', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/super-admin/admins', label: 'Admin Management', icon: ShieldCheck },
   { to: '/super-admin/users', label: 'Users', icon: Users },
+  { to: '/super-admin/advertisements', label: 'Advertisements', icon: Megaphone },
   { to: '/super-admin/listings', label: 'Listings', icon: List },
   { to: '/super-admin/categories', label: 'Categories', icon: FileText },
   { to: '/super-admin/settings', label: 'Settings', icon: Settings },
@@ -12,7 +13,7 @@ const navItems = [
 
 export default function SuperAdminLayout() {
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-[#C4E3FF]">
       <aside className="hidden w-72 flex-col border-r border-slate-200 bg-white px-4 py-6 lg:flex">
         <Link to="/" className="mb-8 flex items-center gap-2 px-2 font-display text-lg font-extrabold">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 text-sm text-white">

@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 import AdminSupportBoard from '../components/AdminSupportBoard'
+import AdvertisementDisplay from '../components/AdvertisementDisplay'
 import CategorySquare from '../components/CategorySquare'
 import CommunityHighlights from '../components/CommunityHighlights'
 import GlobalServiceBoard from '../components/GlobalServiceBoard'
@@ -21,15 +22,17 @@ import SearchAndBrowse from '../components/SearchAndBrowse'
 import { useAppContext } from '../context/AppContext'
 
 const mainCategories = [
-  { title: 'Classified', subtitle: 'For All Purposes', route: '/classified', accent: 'gold' as const, info: 'Hiring – Jobs Available', meta: 'Latest updates' },
-  { title: 'Renting', subtitle: 'Looking To Rent', route: '/renting', accent: 'blue' as const, info: 'Giving For Rent', meta: 'Available homes' },
-  { title: 'Housing', subtitle: 'Selling • Owning • Leasing', route: '/housing', accent: 'amber' as const, info: 'Properties and land', meta: 'Local listings' },
-  { title: 'Events', subtitle: 'Workshops & Happenings', route: '/events', accent: 'gold' as const, info: 'Meetups and showcases', meta: 'Upcoming events' },
-  { title: 'Gold', subtitle: '22k – 18k – 10k', route: '/gold', accent: 'amber' as const, info: 'Precious metals & trading', meta: 'Daily rates' },
-  { title: 'Community', subtitle: 'Domestic & Global Groups', route: '/community', accent: 'blue' as const, info: 'Connect and share', meta: 'New members' },
-  { title: 'Ethnicity', subtitle: 'Global Culture & Connection', route: '/ethnicity', accent: 'gold' as const, info: 'Community stories', meta: 'Culture & trends' },
-  { title: 'Membership', subtitle: 'For All Purposes', route: '/membership', accent: 'blue' as const, info: 'Member-only programs', meta: 'Exclusive access' },
-  { title: 'Funding', subtitle: 'Support & Growth', route: '/funding', accent: 'amber' as const, info: 'Investor direction', meta: 'Funding updates' },
+  { title: 'Classified', subtitle: 'FOR ALL PURPOSES', route: '/classified', info: 'Hiring – Jobs Available' },
+  { title: 'Renting', subtitle: 'LOOKING TO RENT', route: '/renting', info: 'Giving For Rent' },
+  { title: 'Education', subtitle: 'LEARNING & DEVELOPMENT', route: '/category/education', info: 'Courses, education and learning opportunities' },
+  { title: 'Selling', subtitle: 'BUY & SELL', route: '/category/selling', info: 'Products and items for sale' },
+  { title: 'Lottery', subtitle: 'LOTTERY & DRAW', route: '/category/lottery', info: 'Lottery opportunities and draws' },
+  { title: 'Winners', subtitle: 'WINNERS & RESULTS', route: '/category/winners', info: 'Latest winners and results' },
+  { title: 'Relief Fund For The Victims', subtitle: 'SUPPORT & ASSISTANCE', route: '/category/relief-fund', info: 'Help and support for victims' },
+  { title: 'Events', subtitle: 'WORKSHOPS & HAPPENINGS', route: '/events', info: 'Meetups and showcases' },
+  { title: 'Stock Exchange', subtitle: 'MARKET & TRADING', route: '/category/stock-exchange', info: 'Stocks, markets and exchange information' },
+  { title: 'Service Stations', subtitle: 'SERVICES & LOCATIONS', route: '/category/service-stations', info: 'Find available service stations' },
+  { title: 'Free Gifts', subtitle: 'GIFTS & OFFERS', route: '/category/free-gifts', info: 'Free gifts and special offers' },
 ] as const
 
 const serviceHighlights = [
@@ -68,75 +71,29 @@ export default function Home() {
     <div className="page-shell">
       <section className="hero-section">
         <div className="hero-overlay" />
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex-1">
-              <div className="hero-badge">
-                <Sparkles className="h-3.5 w-3.5" />
-                Premium global marketplace
-              </div>
-
-              <h1 className="mt-5 max-w-xl font-display text-4xl font-extrabold leading-tight text-slate-900 sm:text-5xl lg:text-6xl">
-                International Battling Where Goals Meet
-              </h1>
-
-              <p className="mt-5 max-w-xl text-base text-slate-600 sm:text-lg">
-                Discover homes, jobs, community groups, events, memberships and trusted services across cities and countries in one elegant platform.
-              </p>
-
-              <div className="mt-8 flex max-w-2xl flex-col gap-3 rounded-[26px] border border-white/70 bg-white/75 p-2 shadow-[0_28px_70px_rgba(24,54,96,0.14)] backdrop-blur-md sm:flex-row">
-                <div className="relative flex-1">
-                  <input
-                    type="search"
-                    aria-label="Search listings"
-                    placeholder="Search anything..."
-                    className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
-                  />
-                </div>
-                <Link
-                  to="/listings"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand-600 to-brand-800 px-5 text-sm font-semibold text-white shadow-lg shadow-brand-200/80 transition hover:brightness-110"
-                >
-                  Search <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-
-              <div className="mt-6 flex flex-wrap items-center gap-2">
-                {['Mechanics', 'Tailors', 'Restaurants', 'Travel', 'Jobs'].map((tag) => (
-                  <Link key={tag} to="/listings" className="rounded-full border border-slate-200 bg-white/80 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-800">
-                    {tag}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex w-full max-w-xl items-center justify-center lg:justify-end">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-8">
+          <div className="grid items-center gap-x-6 gap-y-4 md:grid-cols-[minmax(0,1.1fr)_minmax(300px,0.9fr)]">
+            <div className="hero-globe-position order-1 flex w-full items-center justify-center md:self-start">
               <div className="hero-visual-wrap">
-                <div className="hero-logo-mark">
-                  <div className="hero-logo-mark__badge">G</div>
-                  <div>
-                    <div className="text-[11px] uppercase tracking-[0.3em] text-brand-700">Presented by</div>
-                    <div className="font-display text-2xl font-black text-slate-900">Golden Traders</div>
-                  </div>
-                </div>
                 <RotatingGlobe />
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap gap-3 rounded-[28px] border border-brand-100 bg-white/80 p-3 shadow-[0_18px_48px_rgba(40,82,151,0.08)] backdrop-blur-md">
-          {mainCategories.map((category) => (
-            <Link
-              key={category.title}
-              to={category.route}
-              className="marketplace-tab"
-            >
-              {category.title}
-            </Link>
-          ))}
+            <div className="hero-featured-ad order-2 flex w-full justify-center self-start md:col-start-2 md:row-start-1">
+              <AdvertisementDisplay />
+            </div>
+
+            <div className="order-3 max-w-4xl pl-1 text-left sm:pl-2 md:col-span-2 md:row-start-2 md:-mt-10 lg:-mt-16 lg:pl-6">
+              <h1 className="mt-0 max-w-[800px] font-display text-3xl font-extrabold leading-tight text-[#071A3D] sm:text-4xl lg:text-5xl">
+                Discover trusted services in one elegant platform
+              </h1>
+
+              <p className="mt-4 max-w-[850px] text-base leading-relaxed text-slate-600 sm:mt-5 sm:text-xl">
+                Discover homes, jobs, community groups, events, memberships and trusted services across cities and countries in one elegant platform.
+              </p>
+            </div>
+
+          </div>
         </div>
       </section>
 
@@ -154,7 +111,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="marketplace-grid">
           {mainCategories.map((category) => (
             <CategorySquare key={category.title} {...category} />
           ))}

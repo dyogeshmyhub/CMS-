@@ -44,9 +44,10 @@ function readDb() {
       pages: Array.isArray(parsed.pages) ? parsed.pages : [],
       users: Array.isArray(parsed.users) ? parsed.users : [],
       listings: Array.isArray(parsed.listings) ? parsed.listings : [],
+      advertisements: Array.isArray(parsed.advertisements) ? parsed.advertisements : [],
     }
   } catch {
-    return { categories: [], pages: [], users: [], listings: [] }
+    return { categories: [], pages: [], users: [], listings: [], advertisements: [] }
   }
 }
 
@@ -65,6 +66,69 @@ function buildUserPayload(user) {
 
 function generateId(prefix) {
   return `${prefix}-${crypto.randomUUID().slice(0, 8)}`
+}
+
+const MAX_ACTIVE_ADVERTISEMENTS = 5
+
+function isValidDate(value) {
+  if (!value) return true
+  const date = new Date(`${value}T00:00:00.000Z`)
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value
+}
+
+function isAdvertisementVisible(advertisement, today = new Date().toISOString().slice(0, 10)) {
+  return advertisement.status === 'ACTIVE'
+    && (!advertisement.startDate || advertisement.startDate <= today)
+    && (!advertisement.endDate || advertisement.endDate >= today)
+}
+
+function canAddActiveAdvertisement(advertisements, excludeId) {
+  return advertisements.filter((item) => item.status === 'ACTIVE' && item.id !== excludeId).length < MAX_ACTIVE_ADVERTISEMENTS
+}
+
+function normalizeAdvertisement(input = {}) {
+  const title = String(input.title || '').trim()
+  const advertiser = String(input.advertiser || '').trim()
+  const description = String(input.description || '').trim()
+  const image = String(input.image || '').trim()
+  const ctaText = String(input.ctaText || '').trim()
+  const ctaLink = String(input.ctaLink || '').trim()
+  const startDate = String(input.startDate || '').trim()
+  const endDate = String(input.endDate || '').trim()
+  const status = String(input.status || 'ACTIVE').trim().toUpperCase()
+
+  if (!title || !advertiser || !description) {
+    return { error: 'Title, advertiser, and description are required.' }
+  }
+  if (title.length > 120 || advertiser.length > 100 || description.length > 360 || ctaText.length > 40) {
+    return { error: 'One or more advertisement fields exceed the allowed length.' }
+  }
+  if (image && !/^https?:\/\//i.test(image) && !image.startsWith('/')) {
+    return { error: 'Image must be an http(s) URL or a local path.' }
+  }
+  if (ctaLink && !ctaLink.startsWith('/') && !/^https?:\/\//i.test(ctaLink)) {
+    return { error: 'CTA link must be an http(s) URL or a local path.' }
+  }
+  if (!isValidDate(startDate) || !isValidDate(endDate) || (startDate && endDate && startDate > endDate)) {
+    return { error: 'Enter a valid date range.' }
+  }
+  if (!['ACTIVE', 'INACTIVE'].includes(status)) {
+    return { error: 'Status must be Active or Inactive.' }
+  }
+
+  return {
+    data: {
+      title,
+      advertiser,
+      image,
+      description,
+      ctaText,
+      ctaLink,
+      startDate,
+      endDate,
+      status,
+    },
+  }
 }
 
 function signToken(user) {
@@ -538,6 +602,64 @@ app.delete('/pages/:id', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), (req,
   res.status(204).send()
 })
 
+app.get('/advertisements', (req, res) => {
+  const db = readDb()
+  res.json(db.advertisements.filter((item) => isAdvertisementVisible(item)).slice(0, MAX_ACTIVE_ADVERTISEMENTS))
+})
+
+app.get('/api/admin/advertisements', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), (req, res) => {
+  res.json(readDb().advertisements)
+})
+
+app.post('/api/admin/advertisements', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), (req, res) => {
+  const { data, error } = normalizeAdvertisement(req.body)
+  if (error) return res.status(400).json({ message: error })
+
+  const db = readDb()
+  if (data.status === 'ACTIVE' && !canAddActiveAdvertisement(db.advertisements)) {
+    return res.status(409).json({ message: 'Maximum of 5 active advertisements reached.' })
+  }
+
+  const advertisement = {
+    id: generateId('ad'),
+    ...data,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+  db.advertisements.unshift(advertisement)
+  writeDb(db)
+  return res.status(201).json(advertisement)
+})
+
+app.put('/api/admin/advertisements/:id', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), (req, res) => {
+  const db = readDb()
+  const index = db.advertisements.findIndex((item) => item.id === req.params.id)
+  if (index === -1) return res.status(404).json({ message: 'Advertisement not found.' })
+
+  const { data, error } = normalizeAdvertisement(req.body)
+  if (error) return res.status(400).json({ message: error })
+  if (data.status === 'ACTIVE' && !canAddActiveAdvertisement(db.advertisements, req.params.id)) {
+    return res.status(409).json({ message: 'Maximum of 5 active advertisements reached.' })
+  }
+
+  db.advertisements[index] = {
+    ...db.advertisements[index],
+    ...data,
+    updatedAt: new Date().toISOString(),
+  }
+  writeDb(db)
+  return res.json(db.advertisements[index])
+})
+
+app.delete('/api/admin/advertisements/:id', requireAuth, requireRole('ADMIN', 'SUPER_ADMIN'), (req, res) => {
+  const db = readDb()
+  const initialCount = db.advertisements.length
+  db.advertisements = db.advertisements.filter((item) => item.id !== req.params.id)
+  if (db.advertisements.length === initialCount) return res.status(404).json({ message: 'Advertisement not found.' })
+  writeDb(db)
+  return res.status(204).send()
+})
+
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found.' })
 })
@@ -560,6 +682,10 @@ module.exports = {
   buildUserPayload,
   normalizeRole,
   normalizeStatus,
+  isAdvertisementVisible,
+  canAddActiveAdvertisement,
+  normalizeAdvertisement,
+  MAX_ACTIVE_ADVERTISEMENTS,
   signToken,
   ensureInitialSuperAdmin,
 }

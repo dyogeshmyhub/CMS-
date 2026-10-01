@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { categories as initialCategories, cmsPages as initialPages, listings as initialListings, users as initialUsers } from '../data/mockData'
-import type { AppUser, Category, CmsPage, Listing } from '../types'
+import type { Advertisement, AdvertisementInput, AppUser, Category, CmsPage, Listing } from '../types'
 
 export type AuthRole = 'USER' | 'ADMIN' | 'SUPER_ADMIN'
 
@@ -18,6 +18,11 @@ export interface AuthUser {
 interface AppContextValue {
   listings: Listing[]
   addListing: (listing: Listing) => void
+  advertisements: Advertisement[]
+  refreshAdvertisements: (includeInactive?: boolean) => Promise<void>
+  addAdvertisement: (advertisement: AdvertisementInput) => Promise<Advertisement>
+  updateAdvertisement: (id: string, advertisement: AdvertisementInput) => Promise<Advertisement>
+  removeAdvertisement: (id: string) => Promise<void>
   categories: Category[]
   addCategory: (category: Category) => void
   updateCategory: (id: string, updates: Partial<Category>) => void
@@ -78,6 +83,7 @@ function safeStorageRead<T>(key: string): T | null {
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [listings, setListings] = useState<Listing[]>(initialListings)
+  const [advertisements, setAdvertisements] = useState<Advertisement[]>([])
   const [categories, setCategories] = useState<Category[]>(() => {
     if (typeof window === 'undefined') return initialCategories
 
@@ -121,10 +127,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const loadData = async () => {
       try {
-        const [categoriesResponse, pagesResponse, usersResponse] = await Promise.all([
+        const [categoriesResponse, pagesResponse, usersResponse, advertisementsResponse] = await Promise.all([
           fetch(`${API_BASE_URL}/categories`),
           fetch(`${API_BASE_URL}/pages`),
           authToken ? fetch(`${API_BASE_URL}/api/users`, { headers: { Authorization: `Bearer ${authToken}` } }) : Promise.resolve(null),
+          authToken
+            ? fetch(`${API_BASE_URL}/api/admin/advertisements`, { headers: { Authorization: `Bearer ${authToken}` } })
+            : fetch(`${API_BASE_URL}/advertisements`),
         ])
 
         if (categoriesResponse.ok) {
@@ -154,6 +163,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
             if (typeof window !== 'undefined') {
               window.localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(usersData))
             }
+          }
+        }
+
+        if (advertisementsResponse.ok) {
+          const advertisementsData = (await advertisementsResponse.json()) as Advertisement[]
+          if (isMounted && Array.isArray(advertisementsData)) setAdvertisements(advertisementsData)
+        } else if (authToken) {
+          const publicAdsResponse = await fetch(`${API_BASE_URL}/advertisements`)
+          if (publicAdsResponse.ok) {
+            const publicAds = (await publicAdsResponse.json()) as Advertisement[]
+            if (isMounted && Array.isArray(publicAds)) setAdvertisements(publicAds)
           }
         }
       } catch {
@@ -293,6 +313,53 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   const addListing = (listing: Listing) => setListings((prev) => [listing, ...prev])
+
+  const refreshAdvertisements = async (includeInactive = false) => {
+    const response = await fetch(`${API_BASE_URL}${includeInactive ? '/api/admin/advertisements' : '/advertisements'}`, {
+      headers: includeInactive && authToken ? { Authorization: `Bearer ${authToken}` } : {},
+    })
+    const payload = await response.json()
+    if (!response.ok) throw new Error(payload.message || 'Unable to load advertisements.')
+    setAdvertisements(payload as Advertisement[])
+  }
+
+  const addAdvertisement = async (advertisement: AdvertisementInput) => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/advertisements`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}) },
+      body: JSON.stringify(advertisement),
+    })
+    const payload = await response.json()
+    if (!response.ok) throw new Error(payload.message || 'Unable to save advertisement.')
+    const savedAdvertisement = payload as Advertisement
+    setAdvertisements((current) => [savedAdvertisement, ...current])
+    return savedAdvertisement
+  }
+
+  const updateAdvertisement = async (id: string, advertisement: AdvertisementInput) => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/advertisements/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}) },
+      body: JSON.stringify(advertisement),
+    })
+    const payload = await response.json()
+    if (!response.ok) throw new Error(payload.message || 'Unable to update advertisement.')
+    const savedAdvertisement = payload as Advertisement
+    setAdvertisements((current) => current.map((item) => (item.id === id ? savedAdvertisement : item)))
+    return savedAdvertisement
+  }
+
+  const removeAdvertisement = async (id: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/advertisements/${id}`, {
+      method: 'DELETE',
+      headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+    })
+    if (!response.ok) {
+      const payload = await response.json()
+      throw new Error(payload.message || 'Unable to delete advertisement.')
+    }
+    setAdvertisements((current) => current.filter((item) => item.id !== id))
+  }
 
   const addCategory = async (category: Category) => {
     try {
@@ -454,6 +521,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     () => ({
       listings,
       addListing,
+      advertisements,
+      refreshAdvertisements,
+      addAdvertisement,
+      updateAdvertisement,
+      removeAdvertisement,
       categories,
       addCategory,
       updateCategory,
@@ -479,7 +551,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       refreshAuth,
       normalizeRole,
     }),
-    [listings, categories, pages, users, favorites, isAuthenticated, isLoading, userName, currentUser, authToken],
+    [listings, advertisements, categories, pages, users, favorites, isAuthenticated, isLoading, userName, currentUser, authToken],
   )
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

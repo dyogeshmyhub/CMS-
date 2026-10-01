@@ -7,6 +7,7 @@ import {
   Shapes,
   Users,
   BarChart3,
+  Megaphone,
 } from 'lucide-react'
 
 const navItems = [
@@ -15,12 +16,13 @@ const navItems = [
   { to: '/admin/categories', label: 'Categories', icon: Shapes },
   { to: '/admin/pages', label: 'CMS Pages', icon: FileText },
   { to: '/admin/users', label: 'Users', icon: Users },
+  { to: '/admin/advertisements', label: 'Advertisements', icon: Megaphone },
   { to: '/admin/reports', label: 'Reports', icon: BarChart3 },
 ]
 
 export default function AdminLayout() {
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-[#C4E3FF]">
       <aside className="hidden w-64 flex-col border-r border-slate-200 bg-white px-4 py-6 lg:flex">
         <Link to="/" className="mb-8 flex items-center gap-2 px-2 font-display text-lg font-extrabold">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 text-sm text-white">

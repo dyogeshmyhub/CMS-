@@ -22,6 +22,7 @@ import ManageListings from './pages/admin/ManageListings'
 import ManageCategories from './pages/admin/ManageCategories'
 import ManagePages from './pages/admin/ManagePages'
 import ManageUsers from './pages/admin/ManageUsers'
+import ManageAdvertisements from './pages/admin/ManageAdvertisements'
 import SuperAdminDashboard from './pages/SuperAdminDashboard'
 import ManageAdmins from './pages/ManageAdmins'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -66,6 +67,7 @@ function App() {
           <Route path="categories" element={<ManageCategories />} />
           <Route path="pages" element={<ManagePages />} />
           <Route path="users" element={<ManageUsers />} />
+          <Route path="advertisements" element={<ManageAdvertisements />} />
           <Route path="reports" element={<Dashboard />} />
         </Route>
       </Route>
@@ -76,6 +78,7 @@ function App() {
           <Route path="dashboard" element={<SuperAdminDashboard />} />
           <Route path="admins" element={<ManageAdmins />} />
           <Route path="users" element={<ManageUsers />} />
+          <Route path="advertisements" element={<ManageAdvertisements />} />
           <Route path="listings" element={<ManageListings />} />
           <Route path="categories" element={<ManageCategories />} />
           <Route path="reports" element={<Dashboard />} />

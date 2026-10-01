@@ -54,3 +54,22 @@ export interface CmsPage {
   excerpt: string
 }
 
+export type AdvertisementStatus = 'ACTIVE' | 'INACTIVE'
+
+export interface Advertisement {
+  id: string
+  title: string
+  advertiser: string
+  image: string
+  description: string
+  ctaText: string
+  ctaLink: string
+  startDate: string
+  endDate: string
+  status: AdvertisementStatus
+  createdAt: string
+  updatedAt: string
+}
+
+export type AdvertisementInput = Omit<Advertisement, 'id' | 'createdAt' | 'updatedAt'>
+
